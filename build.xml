@@ -669,6 +669,12 @@
     <mkdir dir="${bin.dist.version.dir}/docs/api"/>
     <mkdir dir="${bin.dist.version.dir}/plugins"/>
 
+     <copy todir="${bin.dist.version.dir}" includeEmptyDirs="false">
+         <fileset dir="runtime/deploy">
+           <include name="${final.name}.job"/>
+         </fileset>
+     </copy>
+
     <copy todir="${bin.dist.version.dir}/lib" includeEmptyDirs="false">
       <fileset dir="runtime/local/lib"/>
     </copy>
@@ -733,7 +739,24 @@
     </tar>
   </target>
 
-  <!-- ================================================================== -->
+    <!-- ================================================================== -->
+    <!-- Make bin release tarball                                               -->
+    <!-- ================================================================== -->
+    <target name="tar-bin-hadoop" depends="package-bin" description="--> generate bin.tar.gz distribution package">
+        <tar compression="gzip" longfile="gnu"
+             destfile="${bin.dist.version.dir}-hadoop.tar.gz">
+            <tarfileset dir="${bin.dist.version.dir}" mode="664" prefix="${final.name}">
+                <exclude name="lib/"/>
+                <exclude name="plugins/" />
+                <include name="**" />
+            </tarfileset>
+            <tarfileset dir="${bin.dist.version.dir}" mode="755" prefix="${final.name}">
+                <include name="bin/*" />
+            </tarfileset>
+        </tar>
+    </target>
+
+    <!-- ================================================================== -->
   <!-- Make src release zip                                               -->
   <!-- ================================================================== -->
   <target name="zip-src" depends="package-src" description="--> generate src.zip distribution package">
